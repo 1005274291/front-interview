@@ -346,3 +346,38 @@
     ```
     ![avatar](./装饰者.jpg)
     ![avatar](./装饰者2.jpg)
+32. 了解js中设计模式吗？动手实现一下单例模式？
+    + 单例模式的核心思想就是限制类实例化次数只能一次，一个类只有一个实例，并提供一个访问它的全局访问点，在全局作用域任何地方都可以访问这个实例。
+    + 使用一个变量存储类实例对象（值初始为 `null/undefined` ）。进行类实例化时，判断类实例对象是否存在，存在则返回该实例，不存在则创建类实例后返回。多次调用类生成实例方法，返回同一个实例对象。
+    ![avatar](./单例模式.jpg)
+33. 虚拟 DOM 有什么作用，如何构建虚拟DOM？
+    + 实际上它只是一层对真实DOM的抽象，以JavaScript 对象 (VNode 节点) 作为基础的树，用对象的属性来描述节点，最终可以通过一系列操作使这棵树映射到真实环境上
+    + 在Javascript对象中，虚拟DOM 表现为一个 Object对象。并且最少包含标签名 (tag)、属性 (attrs) 和子元素对象 (children) 三个属性，不同框架对这三个属性的名命可能会有差别
+    + 创建虚拟DOM就是为了更好将虚拟的节点渲染到页面视图中，也可以为跨平台迁移试图做铺垫，所以虚拟DOM对象的节点与真实DOM的属性一一照应
+    + 操作真实DOM在性能的耗费上面可以说是非常之大的
+        1. 为了让 Web 编程模型保持简单，浏览器的 JavaScript 引擎与 DOM 引擎共享一个主线程。任何 DOM API 调用都要先将 JS 数据结构转为 DOM 数据结构，再挂起 JS 引擎并启动 DOM 引擎，执行过后再把可能的返回值反转数据结构，重启 JS 引擎继续执行。这种上下文切换很耗性能，类似的还有单机进程间调用、远程过程调用等。
+        2. 很多 DOM API 的读写都涉及页面布局的“重新计算”，以确保返回值的准确，涉及样式、结构的还会触发页面“重新绘制”，更耗性能。
+    + 简单实现：
+    ```javascript
+    class Vdom{    
+        constructor(option){        
+            this.tagName = option.tagName;        
+            this.props = option.props || {};        
+            this.children = option.children || '';
+        }
+        render(){        
+            let el = document.createElement(this.tagName);       
+            for(let propsKay in this.props){            
+                el.setAttribute(propsKay,this.props[propsKay])        
+            }       
+            if(Array.isArray(this.children)){            
+                this.children.forEach((item)=>{                
+                    el.appendChild(item.render());            
+                })
+            }else{
+                el.innerText = this.children
+            }
+            return el;
+        }
+    }
+    ```
